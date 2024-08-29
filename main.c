@@ -38,8 +38,8 @@ void init_question(struct DNSQuestion *question, char *hostname) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 1) {
-        prinf("Invalid number of arguments. Expected 1, recieved %d", argc);
+    if (argc != 2) {
+        printf("Invalid number of arguments. Expected 1, recieved %d", argc);
         return 0;
     }
 
