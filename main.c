@@ -16,7 +16,7 @@ void init_header(struct DNSHeader *header) {
 
 char *encode_hostname(char *hostname) {
     char *res = (char *)calloc(strlen(hostname) + 2, sizeof(char));
-    char *token = strtok(hostname, '.');
+    char *token = strtok(hostname, ".");
     size_t len_token;
     int pos = 0;
     while (token) {
@@ -24,7 +24,7 @@ char *encode_hostname(char *hostname) {
         res[pos] = itoa((int)len_token);
         strncpy(res[pos + 1], token, len_token);
         pos += len_token + 1; // move pos to start of where next token will go
-        token = strtok(NULL, '.');
+        token = strtok(NULL, ".");
     }
 
     // last byte is set to 0
