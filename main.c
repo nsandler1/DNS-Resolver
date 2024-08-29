@@ -3,7 +3,7 @@
 void validate_alloc(void *mem_ptr) {
 	if (mem_ptr == NULL) {
         printf("Failed to allocated memory");
-        exit(1);
+        exit(0);
 	}
 }
 
