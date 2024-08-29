@@ -22,8 +22,8 @@ char *encode_hostname(char *hostname) {
     int pos = 0;
     while (token) {
         len_token = strlen(token);
-        res[pos] = itoa((int)len_token);
         strncpy(res[pos + 1], token, len_token);
+        sprintf(&res[pos], "%d", (int)len_token);
         pos += len_token + 1; // move pos to start of where next token will go
         token = strtok(NULL, ".");
     }
