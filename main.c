@@ -28,7 +28,8 @@ char *encode_hostname(char *hostname) {
         token = strtok(NULL, ".");
     }
 
-    // last byte is set to 0
+    sprintf(&res[pos - 1], "%d", 0);
+
     return res;
 }
 
