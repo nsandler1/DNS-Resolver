@@ -8,7 +8,6 @@ void validate_alloc(void *mem_ptr) {
 }
 
 void init_header(struct DNSHeader *header) {
-    bzero((void *)header, sizeof(*header));
     header->id = (uint16_t)(rand() % 100); // random int b/w 0 and 99, inclusive
     header->rd = 1;
     header->qdcount = 1;
