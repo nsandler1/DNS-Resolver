@@ -60,5 +60,6 @@ struct DNS_msg {
 
 void validate_alloc(void *mem_ptr);
 void init_header(struct DNSHeader *header);
+void init_question(struct DNSQuestion *question, char *hostname);
 char *encode_hostname(char *hostname);
 int main(int argc, char *argv[]);
