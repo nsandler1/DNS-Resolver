@@ -15,8 +15,8 @@ void init_header(struct DNSHeader *header) {
 }
 
 char *encode_hostname(char *hostname) {
-    char *token = strtok(hostname, '.');
     char *res = (char *)calloc(strlen(hostname) + 2, sizeof(char));
+    char *token = strtok(hostname, '.');
     size_t len_token;
     int pos = 0;
     while (token) {
