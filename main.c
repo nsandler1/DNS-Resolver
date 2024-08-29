@@ -49,5 +49,13 @@ int main(int argc, char *argv[]) {
     }
 
     srand(time(NULL));
+    struct DNSHeader header = {0};
+    struct DNSQuestion question = {0};
+
+    init_question(&question, argv[1]);
+    printf("hostname: %s\nencoded: %s\n", argv[1], question.qname);
+
+    free(question.qname);
+    question.qname = NULL;
     return 0;
 }
