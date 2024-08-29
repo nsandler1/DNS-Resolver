@@ -14,9 +14,13 @@ void init_header(struct DNSHeader *header) {
 }
 
 char *encode_hostname(char *hostname) {
-    const size_t len_hostname = strlen(hostname);
-    char *res = (char *)calloc(len_hostname + 2, sizeof(char));
-    char *token = strtok(hostname, ".");
+    // Make deep copy of hostname to use with strtok()
+    const size_t len_hostname = strlen(hostname) + 1; // +1 for null byte
+    char hostname_cpy[len_hostname];
+    strncpy(hostname_cpy, hostname, len_hostname);
+
+    char *res = (char *)calloc(len_hostname + 2, sizeof(char)); // +2 for leading/trailing token counts
+    char *token = strtok(hostname_cpy, ".");
     size_t len_token;
     int pos = 0;
     while (token) {
@@ -27,7 +31,7 @@ char *encode_hostname(char *hostname) {
         token = strtok(NULL, ".");
     }
 
-    sprintf(&res[pos - 1], "%d", 0);
+    sprintf(&res[pos], "%d", 0);
 
     return res;
 }
