@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <time.h>
+#include "enum.h"
 
 struct DNSHeader {
     uint16_t id;

@@ -38,8 +38,8 @@ char *encode_hostname(char *hostname) {
 
 void init_question(struct DNSQuestion *question, char *hostname) {
     question->qname = (uint8_t *)encode_hostname(hostname);
-    question->qtype = 1;
-    question->qclass = 1;
+    question->qtype = QT_ALL;
+    question->qclass = QC_IN;
 }
 
 int main(int argc, char *argv[]) {
