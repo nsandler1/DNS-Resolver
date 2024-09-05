@@ -6,6 +6,13 @@
 #include <time.h>
 #include "enum.h"
 
+/*
+DNSHeader.flags
+                               1  1  1  1  1  1
+ 0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   OPCODE  |AA|TC|RD|RA|   Z    |   RCODE   |
+*/
 struct DNSHeader {
     uint16_t id;
     unsigned int qr: 1; // query (0) or response (1)?
