@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include "enum.h"
+
+#define DNS_SERVICE_PORT 53
+#define GOOGLE_DNS_SERVER_IP "8.8.8.8"
 
 /*
 DNSHeader.flags
@@ -52,9 +56,10 @@ struct DNS_msg {
 } __attribute__((packed));
 
 void validate_alloc(void *mem_ptr);
+void init_dns_msg(struct DNS_msg *msg);
 void init_header(struct DNSHeader *header);
 void init_question(struct DNSQuestion *question, char *hostname, size_t *len_encoded_hostname);
 void encode_hostname(char *hostname, char *en_hostname_out);
-uint8_t *pack_payload(struct DNS_msg *msg, char *hostname);
-void send_dns_msg(char *hostname);
+uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_out);
+int send_dns_msg(uint8_t *payload, size_t payload_size);
 int main(int argc, char *argv[]);

@@ -7,6 +7,14 @@ void validate_alloc(void *mem_ptr) {
 	}
 }
 
+void init_dns_msg(struct DNS_msg *msg) {
+    msg->header = (struct DNSHeader *)calloc(1, sizeof(struct DNSHeader));
+    validate_alloc(msg->header);
+
+    msg->question = (struct DNSQuestion *)calloc(1, sizeof(struct DNSQuestion));
+    validate_alloc(msg->question);
+}
+
 void init_header(struct DNSHeader *header) {
     header->id = htons(22); //(uint16_t)(rand() % 100); // random number b/w 0 and 99, inclusive
     header->flags = htons(0b0000000100000000);
@@ -45,14 +53,14 @@ void init_question(struct DNSQuestion *question, char *hostname, size_t *len_enc
     question->qclass = htons(QC_IN);
 }
 
-uint8_t *pack_payload(struct DNS_msg *msg, char *hostname) {
+uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_out) {
     size_t len_encoded_hostname;
     init_header(msg->header);
     init_question(msg->question, hostname, &len_encoded_hostname);
 
     printf("hostname: %s\nencoded: %s\n", hostname, msg->question->qname);
 
-    const size_t payload_size = sizeof(msg->header) + (sizeof(uint16_t) * 2) + len_encoded_hostname; // -1 for question.qname pointer
+    const size_t payload_size = sizeof(msg->header) + (sizeof(uint16_t) * 2) + len_encoded_hostname;
     uint8_t* payload = (uint8_t *)calloc(payload_size, sizeof(uint8_t));
     validate_alloc(payload);
 
@@ -71,18 +79,14 @@ uint8_t *pack_payload(struct DNS_msg *msg, char *hostname) {
     free(msg->question->qname);
     msg->question->qname = NULL;
 
+    *payload_size_out = payload_size;
     return payload;
 }
 
-void send_dns_msg(char *hostname) {
-    struct DNS_msg msg;
-    msg.header = (struct DNSHeader *)calloc(1, sizeof(struct DNSHeader));
-    validate_alloc(msg.header);
+int send_dns_msg(uint8_t *payload, size_t payload_size) {
+    }
 
-    msg.question = (struct DNSQuestion *)calloc(1, sizeof(struct DNSQuestion));
-    validate_alloc(msg.question);
 
-    uint8_t *payload = pack_payload(&msg, hostname);
 
     free(payload);
     payload = NULL;
@@ -95,7 +99,14 @@ int main(int argc, char *argv[]) {
     }
 
     srand(time(NULL));
-    send_dns_msg(argv[1]);
+    struct DNS_msg msg;
+    size_t payload_size;
+    uint8_t *payload;
+    int sockfd;
+
+    init_dns_msg(&msg);
+    payload = pack_payload(&msg, argv[1], &payload_size);
+    sockfd = send_dns_msg(payload, payload_size);
 
     return 0;
 }
