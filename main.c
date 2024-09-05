@@ -112,7 +112,8 @@ int send_dns_msg(uint8_t *payload, size_t payload_size) {
 
     return sockfd;
 }
-}
+
+void recv_dns_msg() {}
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
