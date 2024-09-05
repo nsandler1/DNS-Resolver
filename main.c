@@ -84,12 +84,34 @@ uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_
 }
 
 int send_dns_msg(uint8_t *payload, size_t payload_size) {
+    struct sockaddr_in serv_addr;
+    int status, sockfd;
+
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+        printf("\n Socket creation error\n");
+        exit(1);
     }
 
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(DNS_SERVICE_PORT);
 
+     if (inet_pton(AF_INET, GOOGLE_DNS_SERVER_IP, &serv_addr.sin_addr) <= 0) {
+        printf("\nInvalid address/ Address not supported\n");
+        exit(1);
+    }
+
+    if ((status = connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) {
+        printf("\nConnection Failed\n");
+        exit(1);
+    }
+
+    send(sockfd, payload, payload_size, 0);
 
     free(payload);
     payload = NULL;
+
+    return sockfd;
+}
 }
 
 int main(int argc, char *argv[]) {
