@@ -91,7 +91,7 @@ int send_dns_msg(uint8_t *payload, size_t payload_size) {
     int status, sockfd;
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        printf("\n Socket creation error\n");
+        printf("\nSocket creation error\n");
         exit(1);
     }
 
