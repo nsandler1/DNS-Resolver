@@ -32,18 +32,13 @@ struct DNSHeader {
     uint16_t ancount; // num resource records in the answer section
     uint16_t nscount; // num name server resource records in the authority records section
     uint16_t arcount; // num resource records in the additional records section
-} __attribute__((packed));
+};
 
 struct DNSQuestion {
     uint8_t* qname;
     uint16_t qtype;
     uint16_t qclass;
-} __attribute__((packed));
-
-struct DNSAnswer {
-
 };
-struct DNSAuthority {
 
 };
 struct DNSAdditional {
@@ -53,7 +48,7 @@ struct DNSAdditional {
 struct DNS_msg {
     struct DNSHeader *header;
     struct DNSQuestion *question;
-} __attribute__((packed));
+};
 
 void validate_alloc(void *mem_ptr);
 void init_dns_msg(struct DNS_msg *msg);

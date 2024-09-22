@@ -55,19 +55,22 @@ void init_question(struct DNSQuestion *question, char *hostname, size_t *len_enc
 
 uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_out) {
     size_t len_encoded_hostname;
+    const size_t sizeof_header = sizeof(struct DNSHeader);
+
     init_header(msg->header);
     init_question(msg->question, hostname, &len_encoded_hostname);
 
     printf("hostname: %s\nencoded: %s\n", hostname, msg->question->qname);
 
-    const size_t payload_size = sizeof(msg->header) + (sizeof(uint16_t) * 2) + len_encoded_hostname;
+    const size_t sizeof_question = (sizeof(uint16_t) * 2) + len_encoded_hostname;
+    const size_t payload_size = sizeof_header + sizeof_question;
     uint8_t* payload = (uint8_t *)calloc(payload_size, sizeof(uint8_t));
     validate_alloc(payload);
 
     uint8_t *fill_pos = payload;
-    memcpy(fill_pos, msg->header, sizeof(*(msg->header)));
+    memcpy(fill_pos, msg->header, sizeof_header);
 
-    fill_pos += sizeof(msg->header);
+    fill_pos += sizeof_header;
     memcpy(fill_pos, msg->question->qname, len_encoded_hostname);
 
     fill_pos += len_encoded_hostname;
