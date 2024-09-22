@@ -50,6 +50,7 @@ struct DNS_msg {
     struct DNSQuestion *question;
 };
 
+void print_bytes(uint8_t* bytes, size_t size);
 void validate_alloc(void *mem_ptr);
 void init_dns_msg(struct DNS_msg *msg);
 void init_header(struct DNSHeader *header);

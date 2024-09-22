@@ -1,5 +1,11 @@
 #include "main.h"
 
+void print_bytes(uint8_t* bytes, size_t size) {
+    for (uint8_t i=0; i < size; i++) {
+        printf("%02x", bytes[i]);
+    }
+}
+
 void validate_alloc(void *mem_ptr) {
 	if (mem_ptr == NULL) {
         printf("Failed to allocated memory");
