@@ -4,6 +4,8 @@ void print_bytes(uint8_t* bytes, size_t size) {
     for (uint8_t i=0; i < size; i++) {
         printf("%02x", bytes[i]);
     }
+
+    printf("\n");
 }
 
 void validate_alloc(void *mem_ptr) {
@@ -131,7 +133,6 @@ void recv_dns_msg(int sockfd) {
     recvfrom(sockfd, buff, size, MSG_WAITALL, NULL, NULL);
 
     print_bytes(buff, size);
-    printf("\n");
 }
 
 int main(int argc, char *argv[]) {
