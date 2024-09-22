@@ -58,5 +58,5 @@ void init_question(struct DNSQuestion *question, char *hostname, size_t *len_enc
 void encode_hostname(char *hostname, char *en_hostname_out);
 uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_out);
 int send_dns_msg(uint8_t *payload, size_t payload_size);
-void recv_dns_msg();
+void recv_dns_msg(int sockfd);
 int main(int argc, char *argv[]);

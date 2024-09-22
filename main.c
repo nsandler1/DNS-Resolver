@@ -120,7 +120,15 @@ int send_dns_msg(uint8_t *payload, size_t payload_size) {
     return sockfd;
 }
 
-void recv_dns_msg() {}
+void recv_dns_msg(int sockfd) {
+    struct DNS_msg msg_recv = {0};
+    const size_t size = 70;
+    uint8_t buff[size] = {0};
+    recvfrom(sockfd, buff, size, MSG_WAITALL, NULL, NULL);
+
+    print_bytes(buff, size);
+    printf("\n");
+}
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -137,6 +145,8 @@ int main(int argc, char *argv[]) {
     init_dns_msg(&msg);
     payload = pack_payload(&msg, argv[1], &payload_size);
     sockfd = send_dns_msg(payload, payload_size);
+    recv_dns_msg(sockfd);
+    close(sockfd);
 
     return 0;
 }
