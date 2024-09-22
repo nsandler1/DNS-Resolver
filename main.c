@@ -44,7 +44,7 @@ void encode_hostname(char *hostname, char *en_hostname_out) {
     while (token) {
         len_token = strlen(token);
         snprintf(&en_hostname_out[pos], sizeof(uint16_t), "%c", (int)len_token);
-        strncpy(&en_hostname_out[pos + 1], token, len_token + 1);
+        strncpy(&en_hostname_out[pos + 1], token, len_token);
         printf("%lu%s", len_token, &en_hostname_out[pos + 1]);
         pos += len_token + 1; // move pos to start of where next token will go
         token = strtok(NULL, ".");
