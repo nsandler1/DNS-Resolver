@@ -37,13 +37,19 @@ void encode_hostname(char *hostname, char *en_hostname_out) {
     size_t len_token;
     int pos = 0;
 
+    printf("hostname: %s\nencoded: ", hostname);
+
     while (token) {
         len_token = strlen(token);
         snprintf(&en_hostname_out[pos], sizeof(uint16_t), "%c", (int)len_token);
         strncpy(&en_hostname_out[pos + 1], token, len_token + 1);
+        printf("%lu%s", len_token, &en_hostname_out[pos + 1]);
         pos += len_token + 1; // move pos to start of where next token will go
         token = strtok(NULL, ".");
     }
+
+    printf("0\n");
+    en_hostname_out[pos] = 0;
 }
 
 void init_question(struct DNSQuestion *question, char *hostname, size_t *len_encoded_hostname_out) {
@@ -63,8 +69,6 @@ uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_
 
     init_header(msg->header);
     init_question(msg->question, hostname, &len_encoded_hostname);
-
-    printf("hostname: %s\nencoded: %s\n", hostname, msg->question->qname);
 
     const size_t sizeof_question = (sizeof(uint16_t) * 2) + len_encoded_hostname;
     const size_t payload_size = sizeof_header + sizeof_question;
