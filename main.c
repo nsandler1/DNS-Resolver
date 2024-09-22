@@ -33,13 +33,11 @@ void encode_hostname(char *hostname, char *en_hostname_out) {
 
     while (token) {
         len_token = strlen(token);
-        snprintf(&en_hostname_out[pos], sizeof(uint16_t), "%lu", len_token);
+        snprintf(&en_hostname_out[pos], sizeof(uint16_t), "%c", (int)len_token);
         strncpy(&en_hostname_out[pos + 1], token, len_token + 1);
         pos += len_token + 1; // move pos to start of where next token will go
         token = strtok(NULL, ".");
     }
-
-    sprintf(&en_hostname_out[pos], "%d", 0);
 }
 
 void init_question(struct DNSQuestion *question, char *hostname, size_t *len_encoded_hostname_out) {
