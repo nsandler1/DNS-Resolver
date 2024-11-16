@@ -89,9 +89,6 @@ uint8_t *pack_payload(struct DNS_msg *msg, char *hostname, size_t *payload_size_
     fill_pos += sizeof(uint16_t);
     memcpy(fill_pos, &(msg->question->qclass), sizeof(uint16_t));
 
-    free(msg->question->qname);
-    msg->question->qname = NULL;
-
     *payload_size_out = payload_size;
     return payload;
 }
@@ -126,13 +123,43 @@ int send_dns_msg(uint8_t *payload, size_t payload_size) {
     return sockfd;
 }
 
-void recv_dns_msg(int sockfd) {
-    struct DNS_msg msg_recv = {0};
-    const size_t size = 70;
-    uint8_t buff[size] = {0};
-    recvfrom(sockfd, buff, size, MSG_WAITALL, NULL, NULL);
+void recv_dns_msg(int sockfd, struct DNS_msg *msg) {
+    const size_t len = 12;
+    uint8_t temp[len] = {0};
+    recvfrom(sockfd, temp, len, MSG_PEEK, NULL, NULL);
+    for (int i=0; i < len; i++) {
+        printf("%02x ", temp[i]);
+    }
+    printf("\n");
 
-    print_bytes(buff, size);
+    recvfrom(sockfd, msg->header, sizeof(struct DNSHeader), MSG_WAITALL, NULL, NULL);
+    printf("ID: %d\nFLAGS: %d\n#q: %d\n#a: %d\n#servers: %d\n#additional: %d\n", ntohs(msg->header->id), ntohs(msg->header->flags), ntohs(msg->header->qdcount), ntohs(msg->header->ancount), ntohs(msg->header->nscount), ntohs(msg->header->arcount));
+
+    uint8_t sizeof_domain_0[2] = {0};
+    size_t len2 = recvfrom(sockfd, sizeof_domain_0, sizeof(uint8_t) * 2, MSG_WAITALL, NULL, NULL);
+    printf("len: %lu\n", len2);
+    for (int i=0; i < len2; i++) {
+        printf("%02x ", sizeof_domain_0[i]);
+    }
+
+    close(sockfd);
+
+    // const size_t size = 32;
+    // uint8_t buff[size] = {0};
+    // recvfrom(sockfd, buff, size, MSG_WAITALL, NULL, NULL);
+
+    // print_bytes(buff, size);
+}
+
+void cleanup(struct DNS_msg *msg) {
+    free(msg->question->qname);
+    msg->question->qname = NULL;
+
+    free(msg->header);
+    msg->header = NULL;
+
+    free(msg->question);
+    msg->question = NULL;
 }
 
 int main(int argc, char *argv[]) {
@@ -150,8 +177,11 @@ int main(int argc, char *argv[]) {
     init_dns_msg(&msg);
     payload = pack_payload(&msg, argv[1], &payload_size);
     sockfd = send_dns_msg(payload, payload_size);
-    recv_dns_msg(sockfd);
+    bzero(msg.header, sizeof(struct DNSHeader));
+    bzero(msg.question, sizeof(struct DNSQuestion));
+    recv_dns_msg(sockfd, &msg);
     close(sockfd);
+    //cleanup(&msg);
 
     return 0;
 }
